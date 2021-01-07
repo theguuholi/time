@@ -38,18 +38,23 @@ defmodule DurationParser do
         {:error, "expected 2 digits"}
   """
   def parse_minutes(hour) do
+    build_result(true, hour)
+  end
+
+  defp build_result(false, _), do: {:error, "expected 2 digits"}
+
+  defp build_result(true, hour) do
     @valid_formats
     |> Enum.find(&String.contains?(hour, &1))
     |> convert(hour)
     |> response
-    |> IO.inspect()
   end
 
   def convert(nil, hour), do: hour |> String.to_integer()
 
   def convert(".", hour) do
-    (hour
-    |> String.to_float()) * 60
+    ((hour
+      |> String.to_float()) * 60)
     |> Kernel.trunc()
   end
 
@@ -71,7 +76,8 @@ defmodule DurationParser do
       |> String.split([".", "h"])
 
     minutes = to_integer(hour_f) * 6
-    ["0", minutes |> Integer.to_string]
+
+    ["0", minutes |> Integer.to_string()]
     |> convert_to_minutes
   end
 
